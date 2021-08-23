@@ -35,7 +35,7 @@ stages:
       displayName: Build an image with arguments
       inputs:
         command: build
-        arguments: ENV_TYPE=$(ENV_TYPE)
+        arguments: --build-arg ENV_TYPE=$(ENV_TYPE)
         dockerfile: $(frontendfilePath)
         tags: |
           $(tag)
