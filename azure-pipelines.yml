@@ -14,7 +14,7 @@ variables:
   dockerRegistryServiceConnection: '4d364630-c667-4fd9-8caf-56783cd6de05'
   imageRepository: 'asmirnovpipelineazure'
   containerRegistry: 'ascicdacr.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
+  frontendfilePath: 'frontend/Dockerfile'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'ascicdacr110751ce-auth'
 
@@ -32,9 +32,18 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Build an image with arguments
       inputs:
-        command: buildAndPush
+        command: build
+        arguments: 
+          ENV_TYPE: $(ENV_TYPE)
+        dockerfile: $(frontendfilePath)
+        tags: |
+          $(tag)
+    - task: Docker@3
+      displayName: Push an image to container registry
+      inputs:
+        command: Push
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
