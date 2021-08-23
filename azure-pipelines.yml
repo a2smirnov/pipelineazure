@@ -31,21 +31,24 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
+    
     - task: Docker@2
       displayName: Build an image with arguments
       inputs:
-        command: build
-        arguments: --build-arg ENV_TYPE=$(ENV_TYPE)
-        dockerfile: $(frontendfilePath)
+        containerRegistry: $(containerRegistry)
+        repository: 'fe-nginx'
+        command: 'build'
+        Dockerfile: $(frontendfilePath)
+        buildContext: './frontend/'
+        arguments: '--build-arg ENV_TYPE=$(ENV_TYPE)'
         tags: |
           $(tag)
     - task: Docker@2
       displayName: Push an image to container registry
       inputs:
+        containerRegistry: $(containerRegistry)
+        repository: 'fe-nginx'
         command: Push
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
 
