@@ -12,7 +12,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '0ae7342f-7839-460f-b769-ac678d458d10'
-  imageRepository: 'fe-nginx'
+  imageRepository: 'fenginx'
   containerRegistry: 'ascicdacr.azurecr.io'
   dockerfilePath: './frontend/Dockerfile'
   tag: '$(Build.BuildId)'
@@ -39,8 +39,7 @@ stages:
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
         arguments: '--build-arg ENV_TYPE=$(env_type)'
-        tags: |
-          $(tag)
+        tags: 'latest'
 
     - task: Docker@2
       displayName: Push an image to container registry
@@ -48,8 +47,7 @@ stages:
         command: Push
         repository: $(imageRepository)
         containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+        tags: 'latest'
 
     - upload: manifests
       artifact: manifests
