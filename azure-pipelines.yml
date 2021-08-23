@@ -12,7 +12,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '0ae7342f-7839-460f-b769-ac678d458d10'
-  imageRepository: 'fenginx'
+  imageRepository: 'fe-nginx'
   containerRegistry: 'ascicdacr.azurecr.io'
   dockerfilePath: './frontend/Dockerfile'
   tag: '$(Build.BuildId)'
@@ -33,9 +33,9 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Build an image
       inputs:
-        command: build
+        command: Build
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
         arguments: '--build-arg ENV_TYPE=$(env_type)'
@@ -43,7 +43,7 @@ stages:
           $(tag)
 
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Push an image to container registry
       inputs:
         command: Push
         repository: $(imageRepository)
