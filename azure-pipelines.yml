@@ -37,9 +37,10 @@ stages:
       inputs:
         command: Build
         repository: $(imageRepository)
+        containerRegistry: $(dockerRegistryServiceConnection)
         dockerfile: $(dockerfilePath)
         arguments: '--build-arg ENV_TYPE=$(env_type)'
-        tags: $(containerRegistry)/$(imageRepository):latest'
+        tags: 'latest'
 
     - task: Docker@2
       displayName: Push an image to container registry
