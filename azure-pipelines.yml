@@ -16,7 +16,7 @@ variables:
   containerRegistry: 'ascicdacr.azurecr.io'
   dockerfilePath: './frontend/Dockerfile'
   tag: '$(Build.BuildId)'
-  imagePullSecret: 'ascicdacr111344a1-auth'
+  imagePullSecret: 'ascicdacr-auth'
   env_type: 'prod'
 
   # Agent VM image name
@@ -81,8 +81,9 @@ stages:
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yml
                 $(Pipeline.Workspace)/manifests/service.yml
+                $(Pipeline.Workspace)/manifests/ingress.yml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)
+                $(containerRegistry)/$(imageRepository):latest
 
