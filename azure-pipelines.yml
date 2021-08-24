@@ -68,14 +68,28 @@ stages:
            --build-arg DB_USERNAME=$(DB_USERNAME)
            --build-arg DB_PASSWORD=$(DB_PASSWORD)
            --build-arg DB_HOST=$(DB_HOST)
-           --build-arg DB_NAME=$(DB_NAME)
+           --build-arg DB_NAME=$(DB_NAME)'
         tags: 'latest'
 
     - task: Docker@2
-      displayName: Push an image to container registry
+      displayName: Push FE image to container registry
       inputs:
         command: Push
-        repository: $(imageRepository)
+        repository: $(imageRepositoryFE)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: 'latest'
+    - task: Docker@2
+      displayName: Push BE-nginx image to container registry
+      inputs:
+        command: Push
+        repository: $(imageRepositoryBE-nginx)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: 'latest'
+    - task: Docker@2
+      displayName: Push BE-php image to container registry
+      inputs:
+        command: Push
+        repository: $(imageRepositoryBE-php)
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: 'latest'
 
@@ -119,5 +133,7 @@ stages:
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
-                $(containerRegistry)/$(imageRepository):latest
+                $(containerRegistry)/$(imageRepositoryFE):latest
+                $(containerRegistry)/$(imageRepositoryBE-nginx):latest
+                $(containerRegistry)/$(imageRepositoryBE-php):latest
 
