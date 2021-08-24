@@ -69,15 +69,6 @@ stages:
         deploy:
           steps:
           - task: KubernetesManifest@0
-            displayName: Create imagePullSecret
-            inputs:
-              action: createSecret
-              namespace: $(delpoyNamespace)
-              secretName: $(imagePullSecret)
-              secretType: dockerRegistry
-              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-
-          - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
@@ -86,8 +77,6 @@ stages:
                 $(Pipeline.Workspace)/manifests/deployment.yml
                 $(Pipeline.Workspace)/manifests/service.yml
                 $(Pipeline.Workspace)/manifests/ingress.yml
-              imagePullSecrets: |
-                $(imagePullSecret)
               containers: |
                 $(containerRegistry)/$(imageRepository):latest
 
