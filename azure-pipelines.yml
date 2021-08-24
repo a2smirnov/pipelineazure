@@ -19,6 +19,7 @@ variables:
   imagePullSecret: 'ascicdacr-auth'
   env_type: 'prod'
   k8sNamespace: 'azure-pipeline'
+  k8sConnection: 'as-cicd-k8s'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -73,6 +74,7 @@ stages:
             displayName: Create imagePullSecret
             inputs:
               action: createSecret
+              kubernetesServiceConnection: $(k8sConnection)
               secretName: $(imagePullSecret)
               namespace: $(k8sNamespace)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
@@ -81,6 +83,7 @@ stages:
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
+              kubernetesServiceConnection: $(k8sConnection)
               namespace: $(k8sNamespace)
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yml
