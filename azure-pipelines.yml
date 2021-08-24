@@ -6,10 +6,8 @@
 trigger:
   batch: true
   tags:
-    - Build
-  branches:
     include:
-      - master
+      - Build
   paths:
     exclude:
       - README.md
