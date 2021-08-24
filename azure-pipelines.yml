@@ -64,11 +64,11 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         dockerfile: $(dockerfilePath)
         arguments: |
-          '--build-arg ENV_TYPE=$(env_type) 
-           --build-arg DB_USERNAME=$(DB_USERNAME)
-           --build-arg DB_PASSWORD=$(DB_PASSWORD)
-           --build-arg DB_HOST=$(DB_HOST)
-           --build-arg DB_NAME=$(DB_NAME)'
+          --build-arg ENV_TYPE=$(env_type)
+          --build-arg DB_USERNAME=$(DB_USERNAME)
+          --build-arg DB_PASSWORD=$(DB_PASSWORD)
+          --build-arg DB_HOST=$(DB_HOST)
+          --build-arg DB_NAME=$(DB_NAME)
         tags: 'latest'
 
     - task: Docker@2
