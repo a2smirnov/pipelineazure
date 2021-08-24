@@ -15,6 +15,13 @@ spec:
 #    - host: pipeline-ascicdk8s-1a18.db51c362f6e44b069ddb.westeurope.aksapp.io
     -  http:
         paths:
+          - path: /trackerdata/
+            pathType: ImplementationSpecific
+            backend:
+                service:
+                  name: be-nginx
+                  port:
+                    number: 8080
           - path: /
             pathType: ImplementationSpecific
             backend:
