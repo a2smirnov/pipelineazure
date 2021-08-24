@@ -1,5 +1,5 @@
 # Azure DevOps pipeline test
-# Push with '*Build*' tag triggers app deployment at azure k8s cluster
+# Push with '/*Build/*' tag triggers app deployment at azure k8s cluster
 Infrastructure (Azure MySQL, ACR, Azure k8s) should by deployed via terraform first
 (a2smirnov/firsttest/terraform)
 
