@@ -12,10 +12,7 @@ trigger:
    exclude:
      - README.md
   tags:
-    include:
-      - 'build'
-    exclude:
-      - '*'
+  - Build
 
 
 resources:
