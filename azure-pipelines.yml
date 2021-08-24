@@ -29,7 +29,7 @@ variables:
   dockerfilePathBE-php: './backend/Dockerfile-php'
   frontendContext: './frontend/'
   backendContext: './backend/'
-  tag: '$(Build.BuildId)'
+  tag: '$(SourceBranchName)_$(Build.BuildNumber)'
 #  tag: 'latest'
   imagePullSecret: 'ascicdacr-auth'
   env_type: 'prod'
