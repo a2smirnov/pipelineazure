@@ -2,8 +2,19 @@
 # Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
+# Setting "build and deploy" trigger - master branch with 'build' tag
 trigger:
-- master
+  batch: true
+  branches:
+   include:
+     - master
+  paths:
+   exclude:
+     - README.md
+  tags:
+    include:
+      - build
+
 
 resources:
 - repo: self
