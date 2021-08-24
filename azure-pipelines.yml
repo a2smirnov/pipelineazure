@@ -60,10 +60,10 @@ stages:
 
   jobs:
   - deployment: Deploy
-    displayName: Deploy
+    displayName: Deploy to AKS
     pool:
       vmImage: $(vmImageName)
-    environment: 'a2smirnovpipelineazure-1066.azure-pipeline'
+    environment: 'dev'
     strategy:
       runOnce:
         deploy:
@@ -85,7 +85,7 @@ stages:
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yml
                 $(Pipeline.Workspace)/manifests/service.yml
-                $(Pipeline.Workspace)/manifests/ingress.yml
+#                $(Pipeline.Workspace)/manifests/ingress.yml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
