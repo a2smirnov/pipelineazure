@@ -18,7 +18,7 @@ variables:
   tag: '$(Build.BuildId)'
   imagePullSecret: 'ascicdacr-auth'
   env_type: 'prod'
-  k8sNamespace: 'azure-pipeline'
+#  k8sNamespace: 'azure-pipeline'
   k8sConnection: 'as-cicd-k8s'
 
   # Agent VM image name
@@ -76,7 +76,7 @@ stages:
               action: createSecret
               kubernetesServiceConnection: $(k8sConnection)
               secretName: $(imagePullSecret)
-              namespace: $(k8sNamespace)
+#              namespace: $(k8sNamespace)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
           - task: KubernetesManifest@0
@@ -84,7 +84,7 @@ stages:
             inputs:
               action: deploy
               kubernetesServiceConnection: $(k8sConnection)
-              namespace: $(k8sNamespace)
+#              namespace: $(k8sNamespace)
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yml
                 $(Pipeline.Workspace)/manifests/service.yml
