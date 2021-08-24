@@ -13,9 +13,9 @@ trigger:
      - README.md
   tags:
     include:
-      - build
+      - 'build'
     exclude:
-      - *
+      - '*'
 
 
 resources:
