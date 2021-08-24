@@ -5,14 +5,14 @@
 # Setting "build and deploy" trigger - master branch with 'build' tag
 trigger:
   batch: true
-  branches:
-   include:
-     - master
-  paths:
-   exclude:
-     - README.md
   tags:
-  - Build
+    - Build
+  branches:
+    include:
+      - master
+  paths:
+    exclude:
+      - README.md
 
 
 resources:
