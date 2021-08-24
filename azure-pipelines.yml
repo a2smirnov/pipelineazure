@@ -21,7 +21,8 @@ variables:
   dockerfilePathBE-php: './backend/Dockerfile-php'
   frontendContext: './frontend/'
   backendContext: './backend/'
-  tag: '$(Build.BuildId)'
+#  tag: '$(Build.BuildId)'
+  tag: 'latest'
   imagePullSecret: 'ascicdacr-auth'
   env_type: 'prod'
   k8sNamespace: 'azure-pipeline'
@@ -51,7 +52,7 @@ stages:
         buildContext: $(frontendContext)
         dockerfile: $(dockerfilePathFE)
         arguments: '--build-arg ENV_TYPE=$(env_type)'
-        tags: 'latest'
+        tags: $(tag)
     - task: Docker@2
       displayName: Build BE-nginx image
       inputs:
@@ -61,7 +62,7 @@ stages:
         buildContext: $(backendContext)
         dockerfile: $(dockerfilePathBE-nginx)
         arguments: '--build-arg ENV_TYPE=$(env_type)'
-        tags: 'latest'
+        tags: $(tag)
     - task: Docker@2
       displayName: Build BE-php image
       inputs:
@@ -76,7 +77,7 @@ stages:
           --build-arg DB_PASSWORD=$(DB_PASSWORD)
           --build-arg DB_HOST=$(DB_HOST)
           --build-arg DB_NAME=$(DB_NAME)
-        tags: 'latest'
+        tags: $(tag)
 
     - task: Docker@2
       displayName: Push FE image to container registry
@@ -84,21 +85,21 @@ stages:
         command: Push
         repository: $(imageRepositoryFE)
         containerRegistry: $(dockerRegistryServiceConnection)
-        tags: 'latest'
+        tags: $(tag)
     - task: Docker@2
       displayName: Push BE-nginx image to container registry
       inputs:
         command: Push
         repository: $(imageRepositoryBE-nginx)
         containerRegistry: $(dockerRegistryServiceConnection)
-        tags: 'latest'
+        tags: $(tag)
     - task: Docker@2
       displayName: Push BE-php image to container registry
       inputs:
         command: Push
         repository: $(imageRepositoryBE-php)
         containerRegistry: $(dockerRegistryServiceConnection)
-        tags: 'latest'
+        tags: $(tag)
 
     - upload: manifests
       artifact: manifests
@@ -112,7 +113,7 @@ stages:
     displayName: Deploy to AKS
     pool:
       vmImage: $(vmImageName)
-    environment: 'dev'
+    environment: 'prod'
     strategy:
       runOnce:
         deploy:
@@ -140,7 +141,7 @@ stages:
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
-                $(containerRegistry)/$(imageRepositoryFE):latest
-                $(containerRegistry)/$(imageRepositoryBE-nginx):latest
-                $(containerRegistry)/$(imageRepositoryBE-php):latest
+                $(containerRegistry)/$(imageRepositoryFE):$(tag)
+                $(containerRegistry)/$(imageRepositoryBE-nginx):$(tag)
+                $(containerRegistry)/$(imageRepositoryBE-php):$(tag)
 
