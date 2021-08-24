@@ -19,6 +19,8 @@ variables:
   dockerfilePathFE: './frontend/Dockerfile'
   dockerfilePathBE-nginx: './backend/Dockerfile-nginx'
   dockerfilePathBE-php: './backend/Dockerfile-php'
+  frontendContext: './frontend/'
+  backendContext: './backend/'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'ascicdacr-auth'
   env_type: 'prod'
@@ -46,7 +48,8 @@ stages:
         command: Build
         repository: $(imageRepositoryFE)
         containerRegistry: $(dockerRegistryServiceConnection)
-        dockerfile: $(dockerfilePath)
+        buildContext: $(frontendContext)
+        dockerfile: $(dockerfilePathFE)
         arguments: '--build-arg ENV_TYPE=$(env_type)'
         tags: 'latest'
     - task: Docker@2
@@ -55,7 +58,8 @@ stages:
         command: Build
         repository: $(imageRepositoryBE-nginx)
         containerRegistry: $(dockerRegistryServiceConnection)
-        dockerfile: $(dockerfilePath)
+        buildContext: $(backendContext)
+        dockerfile: $(dockerfilePathBE-nginx)
         arguments: '--build-arg ENV_TYPE=$(env_type)'
         tags: 'latest'
     - task: Docker@2
@@ -64,7 +68,8 @@ stages:
         command: Build
         repository: $(imageRepositoryBE-php)
         containerRegistry: $(dockerRegistryServiceConnection)
-        dockerfile: $(dockerfilePath)
+        buildContext: $(backendContext)
+        dockerfile: $(dockerfilePathBE-php)
         arguments: |
           --build-arg ENV_TYPE=$(env_type)
           --build-arg DB_USERNAME=$(DB_USERNAME)
