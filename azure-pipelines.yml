@@ -60,7 +60,7 @@ stages:
       displayName: Build BE-php image
       inputs:
         command: Build
-        repository: $(imageRepositoryBE-nginx)
+        repository: $(imageRepositoryBE-php)
         containerRegistry: $(dockerRegistryServiceConnection)
         dockerfile: $(dockerfilePath)
         arguments: |
