@@ -20,9 +20,9 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'ascicdacr'
-  imageRepositoryFE: 'fe-nginx'
-  imageRepositoryBE-nginx: 'be-nginx'
-  imageRepositoryBE-php: 'be-php'
+  imageRepositoryFE: 'ascicdacr/fe-nginx'
+  imageRepositoryBE-nginx: 'ascicdacr/be-nginx'
+  imageRepositoryBE-php: 'ascicdacr/be-php'
   containerRegistry: 'ascicdacr.azurecr.io'
   dockerfilePathFE: './frontend/Dockerfile'
   dockerfilePathBE-nginx: './backend/Dockerfile-nginx'
@@ -33,7 +33,7 @@ variables:
 #  tag: 'latest'
   imagePullSecret: 'ascicdacr-auth'
   env_type: 'prod'
-  k8sNamespace: 'azure-pipeline'
+  k8sNamespace: 'prod'
   k8sConnection: 'as-cicd-k8s'
   DB_HOST: 'as-cicd-dbserver.mysql.database.azure.com'
   DB_NAME: 'api_db'
