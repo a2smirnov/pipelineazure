@@ -6,7 +6,7 @@ Infrastructure (Azure MySQL, ACR, Azure k8s) should be deployed via terraform fi
 # Pipline prerequisites:
 Project service connection 'ascicdacr' to ACR should be actual
 
-Project service connection 'as-cicd-k8s' to AKS via KubeConfig (terraform output -raw kube_config) be actual
+Project service connection 'as-cicd-k8s' to AKS via KubeConfig (terraform output -raw kube_config) should be actual
 
 Pipeline Secrets DB_USERNAME and DB_PASSWORD should be set
 
