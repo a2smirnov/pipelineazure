@@ -19,7 +19,7 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  env_type: $(ENV_TYPE)
+  env_type: $(ENVTYPE)
   dockerRegistryServiceConnection: 'ascicdacr'
   imageRepositoryFE: 'ascicdacr/fe-nginx-$(env_type)'
   imageRepositoryBE-nginx: 'ascicdacr/be-nginx-$(env_type)'
