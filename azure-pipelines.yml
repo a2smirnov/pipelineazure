@@ -34,6 +34,8 @@ variables:
   tag: '$(Build.SourceBranchName)_$(Build.BuildNumber)'
 #  tag: 'latest'
   imagePullSecret: 'ascicdacr-auth'
+  fileShareName: 'ascicdfiles'
+  fileShareSecret: 'azure-secret'
   k8sNamespace: $(env_type)
   k8sConnection: 'as-cicd-k8s'
   DB_HOST: 'as-cicd-dbserver.mysql.database.azure.com'
@@ -138,6 +140,16 @@ stages:
               secretName: $(imagePullSecret)
               namespace: $(k8sNamespace)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+          - task: KubernetesManifest@0
+            displayName: Create Azure file share Secret
+            inputs:
+              action: createSecret
+              kubernetesServiceConnection: $(k8sConnection)
+              secretName: $(fileShareSecret)
+              secretType: generic
+              namespace: $(k8sNamespace)
+              secretArguments: '--from-literal=azurestorageaccountname=$(fileShareName) --from-literal=azurestorageaccountkey=$(AZF_SECRET)'
+              
 
           - task: KubernetesManifest@0
             name: bake
