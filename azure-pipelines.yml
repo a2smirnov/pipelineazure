@@ -21,9 +21,9 @@ variables:
   # Container registry service connection established during pipeline creation
   env_type: 'prod'
   dockerRegistryServiceConnection: 'ascicdacr'
-  imageRepositoryFE: 'ascicdacr/fe-nginx-'$(env_type)
-  imageRepositoryBE-nginx: 'ascicdacr/be-nginx-'$(env_type)
-  imageRepositoryBE-php: 'ascicdacr/be-php-'$(env_type)
+  imageRepositoryFE: 'ascicdacr/fe-nginx-$(env_type)'
+  imageRepositoryBE-nginx: 'ascicdacr/be-nginx-$(env_type)'
+  imageRepositoryBE-php: 'ascicdacr/be-php-$(env_type)'
   kustomizationFolder: $(Pipeline.Workspace)'/manifests.'$(env_type)'/'
   containerRegistry: 'ascicdacr.azurecr.io'
   dockerfilePathFE: './frontend/Dockerfile'
