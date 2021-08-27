@@ -126,7 +126,7 @@ stages:
     displayName: Deploy to AKS
     pool:
       vmImage: $(vmImageName)
-    environment: $(event_type)
+    environment: $(env_type)
     strategy:
       runOnce:
         deploy:
