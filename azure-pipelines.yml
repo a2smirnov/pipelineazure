@@ -19,10 +19,12 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
+  env_type: 'prod'
   dockerRegistryServiceConnection: 'ascicdacr'
-  imageRepositoryFE: 'ascicdacr/fe-nginx'
-  imageRepositoryBE-nginx: 'ascicdacr/be-nginx'
-  imageRepositoryBE-php: 'ascicdacr/be-php'
+  imageRepositoryFE: 'ascicdacr/fe-nginx-'$(env_type)
+  imageRepositoryBE-nginx: 'ascicdacr/be-nginx-'$(env_type)
+  imageRepositoryBE-php: 'ascicdacr/be-php-'$(env_type)
+  kustomizationFolder: $(Pipeline.Workspace)'/manifests.'$(env_type)'/'
   containerRegistry: 'ascicdacr.azurecr.io'
   dockerfilePathFE: './frontend/Dockerfile'
   dockerfilePathBE-nginx: './backend/Dockerfile-nginx'
@@ -32,8 +34,7 @@ variables:
   tag: '$(Build.SourceBranchName)_$(Build.BuildNumber)'
 #  tag: 'latest'
   imagePullSecret: 'ascicdacr-auth'
-  env_type: 'prod'
-  k8sNamespace: 'prod'
+  k8sNamespace: $(env_type)
   k8sConnection: 'as-cicd-k8s'
   DB_HOST: 'as-cicd-dbserver.mysql.database.azure.com'
   DB_NAME: 'api_db'
@@ -137,15 +138,20 @@ stages:
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
           - task: KubernetesManifest@0
+            name: bake
+            displayName: Bake K8s manifests from kustomization path
+            inputs:
+              action: bake
+              renderType: kustomize
+              kustomizationPath: $(kustomizationFolder)
+
+          - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
               kubernetesServiceConnection: $(k8sConnection)
               namespace: $(k8sNamespace)
-              manifests: |
-                $(Pipeline.Workspace)/manifests/deployment.yml
-                $(Pipeline.Workspace)/manifests/service.yml
-                $(Pipeline.Workspace)/manifests/ingress.yml
+              manifests: $(bake.manifestsBundle)
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
