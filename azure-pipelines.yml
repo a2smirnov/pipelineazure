@@ -19,7 +19,7 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  env_type: 'dev'
+  env_type: $(ENV_TYPE)
   dockerRegistryServiceConnection: 'ascicdacr'
   imageRepositoryFE: 'ascicdacr/fe-nginx-$(env_type)'
   imageRepositoryBE-nginx: 'ascicdacr/be-nginx-$(env_type)'
@@ -142,6 +142,7 @@ stages:
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
           - task: KubernetesManifest@0
             displayName: Create Azure file share Secret
+            condition: eq($(ENV_TYPE), 'dev'))
             inputs:
               action: createSecret
               kubernetesServiceConnection: $(k8sConnection)
