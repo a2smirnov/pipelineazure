@@ -19,7 +19,7 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  env_type: 'prod'
+  env_type: 'dev'
   dockerRegistryServiceConnection: 'ascicdacr'
   imageRepositoryFE: 'ascicdacr/fe-nginx-$(env_type)'
   imageRepositoryBE-nginx: 'ascicdacr/be-nginx-$(env_type)'
@@ -124,7 +124,7 @@ stages:
     displayName: Deploy to AKS
     pool:
       vmImage: $(vmImageName)
-    environment: 'prod'
+    environment: $(event_type)
     strategy:
       runOnce:
         deploy:
