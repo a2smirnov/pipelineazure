@@ -142,7 +142,7 @@ stages:
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
           - task: KubernetesManifest@0
             displayName: Create Azure file share Secret
-            condition: eq($(ENV_TYPE), 'dev'))
+            condition: eq(variables.env_type, 'dev')
             inputs:
               action: createSecret
               kubernetesServiceConnection: $(k8sConnection)
