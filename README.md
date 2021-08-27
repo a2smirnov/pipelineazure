@@ -10,7 +10,9 @@ Project service connection 'as-cicd-k8s' to AKS via KubeConfig (terraform output
 
 Pipeline Secrets DB_USERNAME and DB_PASSWORD should be set
 
-Pipeline Environment 'prod' should exist, containing Azure k8s resource with created namespace 'prod'
+Pipeline Secret AZF_SECRET (terraform output -raw storage_account_secret) should be set for volume mounts in dev environment
+
+Pipeline Variable ENVTYPE=dev|prod defines deployment type (dev requires porject source files upload to Azure File Share)
 
 
 ## Aleksei Smirnov
