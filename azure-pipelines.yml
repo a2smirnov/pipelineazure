@@ -110,8 +110,10 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: $(tag)
 
-    - upload: manifests
+    - publish: manifests
       artifact: manifests
+    - publish: manifests.$(env_type)
+      artifact: manifests.$(env_type)
 
 - stage: Deploy
   displayName: Deploy stage
