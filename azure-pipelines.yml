@@ -131,7 +131,12 @@ stages:
       runOnce:
         deploy:
           steps:
-
+          - task: Kubernetes@1
+            displayName: 'Create a new namespace $(k8sNamespace)'
+            inputs:
+              command: apply
+              useConfigurationFile: true
+              inline: '{ "kind": "Namespace", "apiVersion": "v1", "metadata": { "name": "$(k8sNamespace)" }}'
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
