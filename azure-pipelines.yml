@@ -71,7 +71,6 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         buildContext: $(frontendContext)
         dockerfile: $(dockerfilePathFE)
-        arguments: '--build-arg ENV_TYPE=$(env_type)'
         tags: $(tag)
     - task: Docker@2
       displayName: Build BE-nginx image
@@ -81,7 +80,6 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         buildContext: $(backendContext)
         dockerfile: $(dockerfilePathBE-nginx)
-        arguments: '--build-arg ENV_TYPE=$(env_type)'
         tags: $(tag)
     - task: Docker@2
       displayName: Build BE-php image
@@ -91,12 +89,7 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         buildContext: $(backendContext)
         dockerfile: $(dockerfilePathBE-php)
-        arguments: |
-          --build-arg ENV_TYPE=$(env_type)
-          --build-arg DB_USERNAME=$(DB_USERNAME)
-          --build-arg DB_PASSWORD=$(DB_PASSWORD)
-          --build-arg DB_HOST=$(DB_HOST)
-          --build-arg DB_NAME=$(DB_NAME)
+        arguments: '--build-arg ENV_TYPE=$(env_type)'
         tags: $(tag)
 
     - task: Docker@2
