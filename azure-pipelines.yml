@@ -2,7 +2,7 @@
 # Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
-# Setting "build and deploy" trigger - master branch with 'build' tag
+# Setting "build and deploy" trigger - master branch with 'Build' tag
 trigger:
   batch: true
   tags:
@@ -18,39 +18,44 @@ resources:
 
 variables:
 
-  # Container registry service connection established during pipeline creation
+  # Environment type - 'dev' or 'prod'
   env_type: $(ENVTYPE)
+  # Container registry service connection established in "Project settings/Service connections"
   dockerRegistryServiceConnection: 'ascicdacr'
+  containerRegistry: 'ascicdacr.azurecr.io'
+  # Images for app parts
   imageRepositoryFE: 'ascicdacr/fe-nginx-$(env_type)'
   imageRepositoryBE-nginx: 'ascicdacr/be-nginx-$(env_type)'
   imageRepositoryBE-php: 'ascicdacr/be-php-$(env_type)'
-  kustomizationFolder: '$(Pipeline.Workspace)/manifests.$(env_type)/'
-  containerRegistry: 'ascicdacr.azurecr.io'
+  # Application public variables
+  DB_HOST: 'as-cicd-dbserver.mysql.database.azure.com'
+  DB_NAME: 'api_db'
+  # Other Build settings
   dockerfilePathFE: './frontend/Dockerfile'
   dockerfilePathBE-nginx: './backend/Dockerfile-nginx'
   dockerfilePathBE-php: './backend/Dockerfile-php'
   frontendContext: './frontend/'
   backendContext: './backend/'
   tag: '$(Build.SourceBranchName)_$(Build.BuildNumber)'
-#  tag: 'latest'
-  imagePullSecret: 'ascicdacr-auth'
+  # Azure file share settings (used in 'dev' environment)
   fileShareName: 'ascicdfiles'
   fileShareSecret: 'azure-secret'
-  k8sNamespace: $(env_type)
+  # K8s service connection established in "Project settings/Service connections"
   k8sConnection: 'as-cicd-k8s'
-  DB_HOST: 'as-cicd-dbserver.mysql.database.azure.com'
-  DB_NAME: 'api_db'
-
+  k8sNamespace: $(env_type)
+  imagePullSecret: 'ascicdacr-auth'
+  # Dev/prod k8s customization folders
+  kustomizationFolder: '$(Pipeline.Workspace)/manifests.$(env_type)/'
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
 
 stages:
 - stage: Build
-  displayName: Build stage
+  displayName: Building and storing application images in ACR $(containerRegistry)
   jobs:
   - job: Build
-    displayName: Build
+    displayName: Building and storing images
     pool:
       vmImage: $(vmImageName)
     steps:
@@ -118,12 +123,12 @@ stages:
       artifact: manifests.$(env_type)
 
 - stage: Deploy
-  displayName: Deploy stage
+  displayName: Deploying application to Azure k8s 
   dependsOn: Build
 
   jobs:
   - deployment: Deploy
-    displayName: Deploy to AKS
+    displayName: Deploy to AKS $(k8sConnection)
     pool:
       vmImage: $(vmImageName)
     environment: $(env_type)
@@ -131,13 +136,15 @@ stages:
       runOnce:
         deploy:
           steps:
+          # Creating k8s namespace for choosen environment
           - task: Kubernetes@1
-            displayName: 'Create a new namespace $(k8sNamespace)'
+            displayName: Create a new namespace $(k8sNamespace)
             inputs:
               kubernetesServiceEndpoint: $(k8sConnection)
               command: apply
               useConfigurationFile: true
               inline: '{ "kind": "Namespace", "apiVersion": "v1", "metadata": { "name": "$(k8sNamespace)" }}'
+          # Creating secret for ACR connection
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
@@ -146,6 +153,7 @@ stages:
               secretName: $(imagePullSecret)
               namespace: $(k8sNamespace)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+          # Creating secret for Azure file share connection for 'dev' environment
           - task: KubernetesManifest@0
             displayName: Create Azure file share Secret
             condition: eq(variables.env_type, 'dev')
@@ -156,8 +164,17 @@ stages:
               secretType: generic
               namespace: $(k8sNamespace)
               secretArguments: '--from-literal=azurestorageaccountname=$(fileShareName) --from-literal=azurestorageaccountkey=$(AZF_SECRET)'
-              
-
+          # Creating secrets for DB connection
+          - task: KubernetesManifest@0
+            displayName: Create DB credentials secret
+            inputs:
+              action: createSecret
+              kubernetesServiceConnection: $(k8sConnection)
+              secretName: DB_CRED
+              secretType: generic
+              namespace: $(k8sNamespace)
+              secretArguments: '--from-literal=DB_USERNAME=$(DB_USERNAME) --from-literal=DB_PASSWORD=$(DB_PASSWORD) --from-literal=DB_HOST=$(DB_HOST) --from-literal=DB_NAME=$(DB_NAME)'
+          # "Backing" resulting manifest via kustomize
           - task: KubernetesManifest@0
             name: bake
             displayName: Bake K8s manifests from kustomization path
@@ -165,7 +182,7 @@ stages:
               action: bake
               renderType: kustomize
               kustomizationPath: $(kustomizationFolder)
-
+          # Applying manifest
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
