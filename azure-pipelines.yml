@@ -183,10 +183,10 @@ stages:
             displayName: Creating a map for non-secret variables
             inputs:
               kubernetesServiceEndpoint: $(k8sConnection)
-              command: apply
+              namespace: $(k8sNamespace)
               configMapName: $(appNonSecret)
               forceUpdateConfigMap: true
-              configMapArguments: '--from-literal=DB_HOST=$(DB_HOST) --from-literal=DB_NAME=$(DB_NAME)'
+              configMapArguments: '--from-literal=ENV_TYPE=$(env_type) --from-literal=DB_HOST=$(DB_HOST) --from-literal=DB_NAME=$(DB_NAME)'
           # "Backing" resulting manifest via kustomize
           - task: KubernetesManifest@0
             name: bake
