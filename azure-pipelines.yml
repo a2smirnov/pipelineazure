@@ -48,6 +48,8 @@ variables:
   kustomizationFolder: '$(Pipeline.Workspace)/manifests.$(env_type)/'
   # K8s secret for apllication environment variables storing
   appSecret: 'app-secret'
+  # K8s configmap for apllication environment variables storing
+  appNonSecret: 'app-public'
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
@@ -175,7 +177,16 @@ stages:
               secretName: $(appSecret)
               secretType: generic
               namespace: $(k8sNamespace)
-              secretArguments: '--from-literal=DB_USERNAME=$(DB_USERNAME) --from-literal=DB_PASSWORD=$(DB_PASSWORD) --from-literal=DB_HOST=$(DB_HOST) --from-literal=DB_NAME=$(DB_NAME)'
+              secretArguments: '--from-literal=DB_USERNAME=$(DB_USERNAME) --from-literal=DB_PASSWORD=$(DB_PASSWORD)'
+          # Creating configmap for non-secret variables
+          - task: Kubernetes@1
+            displayName: Creating a map for non-secret variables
+            inputs:
+              kubernetesServiceEndpoint: $(k8sConnection)
+              command: apply
+              configMapName: $(appNonSecret)
+              forceUpdateConfigMap: true
+              arguments: '--from-literal=DB_HOST=$(DB_HOST) --from-literal=DB_NAME=$(DB_NAME)'
           # "Backing" resulting manifest via kustomize
           - task: KubernetesManifest@0
             name: bake
