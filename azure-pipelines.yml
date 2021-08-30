@@ -186,7 +186,7 @@ stages:
               command: apply
               configMapName: $(appNonSecret)
               forceUpdateConfigMap: true
-              arguments: '--from-literal=DB_HOST=$(DB_HOST) --from-literal=DB_NAME=$(DB_NAME)'
+              configMapArguments: '--from-literal=DB_HOST=$(DB_HOST) --from-literal=DB_NAME=$(DB_NAME)'
           # "Backing" resulting manifest via kustomize
           - task: KubernetesManifest@0
             name: bake
