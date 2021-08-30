@@ -56,7 +56,7 @@ variables:
 
 stages:
 - stage: Build
-  displayName: Building and storing application images in ACR $(containerRegistry)
+  displayName: Building and storing application images in ACR
   jobs:
   - job: Build
     displayName: Building and storing images
@@ -126,7 +126,7 @@ stages:
 
   jobs:
   - deployment: Deploy
-    displayName: Deploy to AKS $(k8sConnection)
+    displayName: Deploy to AKS
     pool:
       vmImage: $(vmImageName)
     environment: $(env_type)
@@ -184,7 +184,7 @@ stages:
           # "Backing" resulting manifest via kustomize
           - task: KubernetesManifest@0
             name: bake
-            displayName: Bakeing K8s manifests from kustomization path
+            displayName: Baking K8s manifests from kustomization path
             inputs:
               action: bake
               renderType: kustomize
