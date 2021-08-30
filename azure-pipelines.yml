@@ -27,9 +27,6 @@ variables:
   imageRepositoryFE: 'ascicdacr/fe-nginx-$(env_type)'
   imageRepositoryBE-nginx: 'ascicdacr/be-nginx-$(env_type)'
   imageRepositoryBE-php: 'ascicdacr/be-php-$(env_type)'
-  # Application public variables
-  DB_HOST: 'as-cicd-dbserver.mysql.database.azure.com'
-  DB_NAME: 'api_db'
   # Other Build settings
   dockerfilePathFE: './frontend/Dockerfile'
   dockerfilePathBE-nginx: './backend/Dockerfile-nginx'
