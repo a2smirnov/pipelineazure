@@ -21,7 +21,7 @@ variables:
   # Environment type - 'dev' or 'prod'
   env_type: $(ENVTYPE)
   # Container registry service connection established in "Project settings/Service connections"
-  dockerRegistryServiceConnection: 'ascicdacr'
+  dockerRegistryServiceConnection: 'MyServiceConnection'
   containerRegistry: 'ascicdacr.azurecr.io'
   # Images for app parts
   imageRepositoryFE: 'ascicdacr/fe-nginx-$(env_type)'
