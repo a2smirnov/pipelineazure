@@ -52,7 +52,7 @@ variables:
 
 
 stages:
-- stage: Quality Gate
+- stage: QualityGate
   displayName: Checking source code with SonarCloud
   jobs:
     - job: CodeCheck
