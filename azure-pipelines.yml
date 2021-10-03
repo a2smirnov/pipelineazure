@@ -70,6 +70,8 @@ stages:
         cliProjectKey: 'asmirnov51_test-repo'
         cliProjectName: 'test repo'
         cliSources: '.'
+        extraProperties: |
+          sonar.exclusions=**/jquery.js
     - task: SonarCloudAnalyze@1
     - task: SonarCloudPublish@1
       inputs:
