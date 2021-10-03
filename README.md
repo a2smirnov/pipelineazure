@@ -18,5 +18,6 @@ DB_HOST, DB_NAME (terrafrom output -raw credentials)
 
 Pipeline Secrets DB_USERNAME and DB_PASSWORD should be set (terrafrom output -raw credentials)
 
+SonarCloud extention should be installed, SonarCloud service endpoint should be set and connected
 
 ## Aleksei Smirnov
